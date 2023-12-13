@@ -10,13 +10,19 @@ import { Product } from "@/components";
 
 const ProductDetails = ({product, products}) => {
 const {image, name, price, details} = product;
-  const {decQty, incQty, qty, onAdd} = useStateContext();
+  const {decQty, incQty, qty, onAdd, setShowCart} = useStateContext();
+  const [index, setIndex] = useState(0)
+
+  const handleBuyNow = () =>{
+    onAdd(product,qty);
+    setShowCart(true)
+  } 
     return (
         <div>
             <div className="product-detail-container">
                 <div>
                     <div className="image-container">
-                        <img src={urlFor(image && image[0])} className="product-detail-image"/>
+                        <img src={urlFor(image && image[index])} className="product-detail-image"/>
                     </div>
                     <div className="small-image-container">
                         {
@@ -24,8 +30,8 @@ const {image, name, price, details} = product;
                                  <img 
                                     src={urlFor(item)} 
                                     key={i}
-                                    className="small-image"
-                                      
+                                    className={i === index ? 'small-image selected-image' : 'small-image'}
+                                     onMouseEnter ={()=> setIndex(i)}
                                  />
                             ))
                         }
@@ -58,7 +64,7 @@ const {image, name, price, details} = product;
                         </div>
                          <div className="buttons"> 
                                <button type="button" className="add-to-cart"  onClick={() => onAdd(product,qty)}> Add to cart </button>
-                               <button type="button" className="buy-now"> Buy Now</button>
+                               <button type="button" onClick={handleBuyNow} className="buy-now"> Buy Now</button>
 
                          </div>
                  </div>

@@ -1,5 +1,7 @@
+import product from "@/sanityecommerce/schemas/product";
 import React, { Children } from "react";
 import { useState, useContext, createContext } from "react";
+import { toast } from "react-hot-toast";
 
 const Context= createContext();
 
@@ -10,7 +12,8 @@ export const StateContext = ({children}) =>{
      const [totalPrice, setTotalPrice]=useState(0)
      const [totalQuantities, setTotalQuantities]=useState(0)
      const [showCart,setShowCart]= useState(false)
-     const array= []
+        let foundProduct ;
+        let index;
 
     const incQty = () => {
         setQty((prevQty) => prevQty +1
@@ -28,6 +31,7 @@ export const StateContext = ({children}) =>{
 
         setTotalPrice((prevTotalPrice)=> prevTotalPrice+product.price * quantity )
         setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + quantity)
+
         if(checkProductInCart) {
             const updateCartItems= cartItems.map((cartProduct)=>{
                 if( cartProduct._id ===product._id) return {
@@ -42,11 +46,34 @@ export const StateContext = ({children}) =>{
          product.quantity=quantity
          setCartItems([...cartItems, product])
      }
+     toast.success(`${qty} ${product.name} added to the cart`)
     }
     const toggleCartItemQuantity= (id, value) =>{
-         
+         foundProduct = cartItems.find((item)=> item._id === id);
+         index= cartItems.findIndex((product)=> product._id === id)
+        //    const newCartItems = cartItems.filter((item)=> item._id != id
+           const newCartItems = [...cartItems]
+        
+         if(value === 'inc'){
+            newCartItems[index]={}
+            setCartItems([...newCartItems,{...foundProduct, quantity: foundProduct.quantity + 1}]);
+            setTotalPrice((prevTotalPrice)=> prevTotalPrice + foundProduct.price);
+            setTotalQuantities((prevTotalQuantities)=> prevTotalQuantities+1)
+         } else if (value === 'dec'){
+             if (foundProduct.quantity > 1 ){
+                setCartItems([...newCartItems,{...foundProduct, quantity: foundProduct.quantity - 1}]);
+                setTotalPrice((prevTotalPrice)=> prevTotalPrice + foundProduct.price);
+                setTotalQuantities((prevTotalQuantities)=> prevTotalQuantities-1)
+             }
+         }
     }
-
+      const onRemove = (product) => {
+        foundProduct = cartItems.find((item) => item._id === product._id )
+        const newCartItems = cartItems.filter((item) => item._id !== product._id);
+        setCartItems(newCartItems)
+        setTotalPrice((prevTotalPrice)=> prevTotalPrice - foundProduct.price * foundProduct.quantity)
+        setTotalQuantities((prevTotalQuantities)=> prevTotalQuantities - foundProduct.quantity)
+      }
      return (
         <Context.Provider
         value={
@@ -60,7 +87,12 @@ export const StateContext = ({children}) =>{
                 cartItems,
                 totalQuantities,
                 setCartItems,
-                setTotalQuantities
+                setTotalQuantities,
+                setTotalPrice,
+                totalPrice,
+                totalQuantities,
+                toggleCartItemQuantity,
+                onRemove
             }
         }
         
