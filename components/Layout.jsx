@@ -8,7 +8,7 @@ const Layout = ({children}) => {
     <div className='layout'>
       
       <Head>
-        <title>Ruslana React Developer</title>
+        <title>Tomiris React Project</title>
       </Head>
       <header>
         <Navbar/>

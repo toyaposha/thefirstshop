@@ -666,13 +666,13 @@ img, svg {
   margin: auto;
  }
  .product .cart-product-image{
-  width: 36%;
-    height: 55%;
+  width: 41%;
+  height: 33%;
  }
  .total{
   align-items: baseline;
   display: flex;
-    flex-direction: column;
+  flex-direction: row;
 }
  
 }
