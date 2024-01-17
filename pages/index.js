@@ -39,4 +39,4 @@ export const getServerSideProps = async () => {
     }
 }
 
-export default page
+export default page;
